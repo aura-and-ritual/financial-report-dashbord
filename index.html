@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aura &amp; Ritual &mdash; Amazon India Q2</title>
+<meta name="description" content="Aura & Ritual — Amazon India sales performance, Q2 FY26.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root{
+    --bg:#faf8f4; --panel:#ffffff; --fg:#2c2621; --fg-muted:#8c8178; --border:#ece6dd;
+    --accent:#a8572f; --accent2:#c6a05c; --track:#efeae2;
+    --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#17130f; --panel:#201b16; --fg:#efe8df; --fg-muted:#a1968b; --border:#332c24;
+           --accent:#c97b4e; --accent2:#d8b878; --track:#2b241d; }
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--fg); font-family:var(--font-sans); line-height:1.45; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1040px; margin:0 auto; padding:30px 20px 52px; }
+  .brand{ font-family:var(--font-serif); font-size:1.5rem; font-weight:600; letter-spacing:.01em; }
+  .eyebrow{ font-size:.72rem; font-weight:600; letter-spacing:.11em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:4px; }
+  .period{ font-size:.82rem; color:var(--fg-muted); margin-top:6px; }
+  .head{ margin-bottom:22px; }
+
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:16px; }
+  .kpi{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:17px 19px; }
+  .kpi.accent{ position:relative; overflow:hidden; }
+  .kpi.accent:before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); }
+  .kpi-label{ font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--fg-muted); }
+  .kpi-val{ font-family:var(--font-serif); font-size:clamp(1.8rem,4.2vw,2.35rem); font-weight:500; margin:6px 0 2px; letter-spacing:-.01em; }
+  .kpi-note{ font-size:.76rem; color:var(--fg-muted); }
+
+  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px 18px 10px; margin-bottom:16px; }
+  .phead{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  .h2{ font-size:.95rem; font-weight:600; margin:0; }
+  .note{ font-size:.74rem; color:var(--fg-muted); }
+  .grid2{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:16px; margin-bottom:16px; }
+  .grid2 .panel{ margin-bottom:0; }
+  .chart{ width:100%; position:relative; }
+  .svg{ display:block; overflow:visible; }
+
+  .axis text{ fill:var(--fg-muted); font-size:11px; font-family:var(--font-sans); }
+  .axis .domain{ stroke:var(--border); }
+  .axis line{ stroke:var(--border); }
+  .grid line{ stroke:var(--border); stroke-opacity:.5; }
+  .grid .domain{ display:none; }
+  .track{ fill:var(--track); }
+  .blabel{ fill:var(--fg); font-size:12px; }
+  .bsub{ fill:var(--fg-muted); font-size:10px; }
+  .bval{ fill:var(--fg-muted); font-size:11px; font-weight:600; }
+  .donut-big{ fill:var(--fg); font-family:var(--font-serif); font-size:26px; font-weight:500; }
+  .donut-sub{ fill:var(--fg-muted); font-size:11px; }
+  .legend{ display:flex; flex-direction:column; gap:7px; margin:8px 2px 4px; }
+  .leg-item{ display:flex; align-items:center; gap:8px; font-size:.8rem; }
+  .dot{ width:10px; height:10px; border-radius:3px; flex:0 0 auto; }
+  .leg-val{ margin-left:auto; color:var(--fg-muted); font-variant-numeric:tabular-nums; }
+  .tip{ position:absolute; pointer-events:none; z-index:5; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:6px 9px; font-size:.76rem; color:var(--fg); box-shadow:0 4px 14px rgba(0,0,0,.16); white-space:nowrap; }
+  .tip-t{ font-weight:600; }
+  .tip-s{ color:var(--fg-muted); margin-top:1px; font-variant-numeric:tabular-nums; }
+  .foot{ font-size:.73rem; color:var(--fg-muted); margin-top:18px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div class="eyebrow">Amazon India &mdash; Sales Performance</div>
+    <div class="brand">Aura &amp; Ritual</div>
+    <div class="period">Q2 FY26 &middot; 1 Jul &ndash; 30 Sep 2026 &middot; figures in &#8377; INR, ordered product sales (excludes cancellations)</div>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi"><div class="kpi-label">Total revenue</div><div class="kpi-val">&#8377;3,63,070</div><div class="kpi-note">Ordered product sales</div></div>
+    <div class="kpi"><div class="kpi-label">Units sold</div><div class="kpi-val">630</div><div class="kpi-note">528 orders placed</div></div>
+    <div class="kpi accent"><div class="kpi-label">Avg order value</div><div class="kpi-val">&#8377;688</div><div class="kpi-note">Revenue &divide; orders</div></div>
+  </section>
+
+  <section class="panel">
+    <div class="phead"><h2 class="h2">Revenue trend</h2><span class="note">Daily ordered product sales</span></div>
+    <div class="chart" id="trend"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="panel"><div class="phead"><h2 class="h2">Top products</h2><span class="note">By revenue</span></div><div class="chart" id="products"></div></section>
+    <section class="panel"><div class="phead"><h2 class="h2">Fulfilment mix</h2><span class="note">Share of revenue</span></div><div class="chart" id="fulfil"></div></section>
+  </div>
+
+  <section class="panel">
+    <div class="phead"><h2 class="h2">Revenue by state</h2><span class="note">Top shipping destinations</span></div>
+    <div class="chart" id="regions"></div>
+  </section>
+
+  <div class="foot">Source: Amazon India seller report, Q2 FY26. Generated 11 Oct 2026.</div>
+</div>
+
+<script>
+var DATA = {"products": [{"product": "Lavender & Chamomile", "type": "Room spray", "revenue": 92781, "units": 169, "orders": 139}, {"product": "Sandalwood & Vetiver", "type": "Room & linen", "revenue": 89251, "units": 149, "orders": 123}, {"product": "Jasmine Nights", "type": "Linen spray", "revenue": 48519, "units": 81, "orders": 65}, {"product": "Rose & Geranium", "type": "Linen spray", "revenue": 46665, "units": 85, "orders": 71}, {"product": "Discovery Set", "type": "Gift set", "revenue": 45435, "units": 65, "orders": 61}, {"product": "Lemongrass & Basil", "type": "Room spray", "revenue": 40419, "units": 81, "orders": 69}], "daily": [{"date": "2026-07-01", "revenue": 5940}, {"date": "2026-07-02", "revenue": 4143}, {"date": "2026-07-03", "revenue": 4342}, {"date": "2026-07-04", "revenue": 3444}, {"date": "2026-07-05", "revenue": 2196}, {"date": "2026-07-06", "revenue": 1098}, {"date": "2026-07-07", "revenue": 4542}, {"date": "2026-07-08", "revenue": 1098}, {"date": "2026-07-09", "revenue": 4542}, {"date": "2026-07-10", "revenue": 2945}, {"date": "2026-07-11", "revenue": 549}, {"date": "2026-07-12", "revenue": 4592}, {"date": "2026-07-13", "revenue": 3893}, {"date": "2026-07-14", "revenue": 2296}, {"date": "2026-07-15", "revenue": 3344}, {"date": "2026-07-16", "revenue": 1148}, {"date": "2026-07-17", "revenue": 1048}, {"date": "2026-07-18", "revenue": 1897}, {"date": "2026-07-19", "revenue": 3145}, {"date": "2026-07-20", "revenue": 1747}, {"date": "2026-07-21", "revenue": 2945}, {"date": "2026-07-22", "revenue": 4891}, {"date": "2026-07-23", "revenue": 2246}, {"date": "2026-07-24", "revenue": 0}, {"date": "2026-07-25", "revenue": 1697}, {"date": "2026-07-26", "revenue": 3594}, {"date": "2026-07-27", "revenue": 6739}, {"date": "2026-07-28", "revenue": 2246}, {"date": "2026-07-29", "revenue": 2396}, {"date": "2026-07-30", "revenue": 1597}, {"date": "2026-07-31", "revenue": 4642}, {"date": "2026-08-01", "revenue": 7038}, {"date": "2026-08-02", "revenue": 3444}, {"date": "2026-08-03", "revenue": 2945}, {"date": "2026-08-04", "revenue": 4043}, {"date": "2026-08-05", "revenue": 9783}, {"date": "2026-08-06", "revenue": 1048}, {"date": "2026-08-07", "revenue": 3893}, {"date": "2026-08-08", "revenue": 1747}, {"date": "2026-08-09", "revenue": 5391}, {"date": "2026-08-10", "revenue": 4342}, {"date": "2026-08-11", "revenue": 1747}, {"date": "2026-08-12", "revenue": 7687}, {"date": "2026-08-13", "revenue": 2895}, {"date": "2026-08-14", "revenue": 5690}, {"date": "2026-08-15", "revenue": 5790}, {"date": "2026-08-16", "revenue": 5391}, {"date": "2026-08-17", "revenue": 5191}, {"date": "2026-08-18", "revenue": 2845}, {"date": "2026-08-19", "revenue": 699}, {"date": "2026-08-20", "revenue": 6539}, {"date": "2026-08-21", "revenue": 2696}, {"date": "2026-08-22", "revenue": 4293}, {"date": "2026-08-23", "revenue": 3544}, {"date": "2026-08-24", "revenue": 1547}, {"date": "2026-08-25", "revenue": 3045}, {"date": "2026-08-26", "revenue": 5141}, {"date": "2026-08-27", "revenue": 4941}, {"date": "2026-08-28", "revenue": 4342}, {"date": "2026-08-29", "revenue": 4243}, {"date": "2026-08-30", "revenue": 1747}, {"date": "2026-08-31", "revenue": 2096}, {"date": "2026-09-01", "revenue": 6738}, {"date": "2026-09-02", "revenue": 3194}, {"date": "2026-09-03", "revenue": 4792}, {"date": "2026-09-04", "revenue": 7936}, {"date": "2026-09-05", "revenue": 8086}, {"date": "2026-09-06", "revenue": 2196}, {"date": "2026-09-07", "revenue": 3444}, {"date": "2026-09-08", "revenue": 4891}, {"date": "2026-09-09", "revenue": 7188}, {"date": "2026-09-10", "revenue": 4492}, {"date": "2026-09-11", "revenue": 2845}, {"date": "2026-09-12", "revenue": 3544}, {"date": "2026-09-13", "revenue": 4093}, {"date": "2026-09-14", "revenue": 6489}, {"date": "2026-09-15", "revenue": 4193}, {"date": "2026-09-16", "revenue": 5191}, {"date": "2026-09-17", "revenue": 4991}, {"date": "2026-09-18", "revenue": 4093}, {"date": "2026-09-19", "revenue": 7986}, {"date": "2026-09-20", "revenue": 7836}, {"date": "2026-09-21", "revenue": 7836}, {"date": "2026-09-22", "revenue": 3294}, {"date": "2026-09-23", "revenue": 5840}, {"date": "2026-09-24", "revenue": 2745}, {"date": "2026-09-25", "revenue": 2546}, {"date": "2026-09-26", "revenue": 4043}, {"date": "2026-09-27", "revenue": 3993}, {"date": "2026-09-28", "revenue": 2995}, {"date": "2026-09-29", "revenue": 5141}, {"date": "2026-09-30", "revenue": 3694}], "fulfilment": [{"channel": "Fulfilled by Amazon", "revenue": 289148, "units": 502, "orders": 416}, {"channel": "Merchant-fulfilled", "revenue": 73922, "units": 128, "orders": 112}], "regions": [{"state": "Maharashtra", "revenue": 77415, "orders": 114}, {"state": "Karnataka", "revenue": 52509, "orders": 74}, {"state": "Delhi", "revenue": 34440, "orders": 57}, {"state": "Telangana", "revenue": 33791, "orders": 51}, {"state": "Tamil Nadu", "revenue": 33391, "orders": 46}, {"state": "Uttar Pradesh", "revenue": 28901, "orders": 42}, {"state": "Rajasthan", "revenue": 26354, "orders": 37}, {"state": "Gujarat", "revenue": 19367, "orders": 26}, {"state": "West Bengal", "revenue": 18568, "orders": 28}, {"state": "Kerala", "revenue": 18019, "orders": 21}, {"state": "Haryana", "revenue": 15174, "orders": 23}, {"state": "Punjab", "revenue": 5141, "orders": 9}]};
+(function(){
+  var fmtIN = new Intl.NumberFormat('en-IN');
+  function inr(n){ return '₹' + fmtIN.format(Math.round(n)); }
+  function inrK(n){ n=Math.round(n);
+    if(Math.abs(n)>=1e5) return '₹'+(n/1e5).toFixed(1).replace(/\.0$/,'')+'L';
+    if(Math.abs(n)>=1e3) return '₹'+(n/1e3).toFixed(1).replace(/\.0$/,'')+'k';
+    return '₹'+n; }
+  function cv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  function pal(){ return { accent:cv('--accent'), accent2:cv('--accent2'), panel:cv('--panel') }; }
+
+  function showTip(tip,title,sub){ tip.style('display','block'); var n=tip.node(); n.innerHTML='';
+    var a=document.createElement('div'); a.className='tip-t'; a.textContent=title;
+    var b=document.createElement('div'); b.className='tip-s'; b.textContent=sub; n.appendChild(a); n.appendChild(b); }
+  function placeTip(tip,el,px,py){ var n=tip.node(),tw=n.offsetWidth,th=n.offsetHeight,W=el.clientWidth;
+    var left=px+12; if(left+tw>W) left=px-tw-12; if(left<0) left=4;
+    var top=py-th-10; if(top<0) top=py+16; tip.style('left',left+'px').style('top',top+'px'); }
+
+  function drawTrend(){
+    var el=document.getElementById('trend'); el.innerHTML='';
+    var parse=d3.utcParse('%Y-%m-%d');
+    var rows=DATA.daily.map(function(r){return {date:parse(r.date), v:+r.revenue};}).filter(function(r){return r.date;});
+    rows.sort(function(a,b){return a.date-b.date;});
+    var W=el.clientWidth||640,H=240,m={t:14,r:16,b:26,l:48},iw=W-m.l-m.r,ih=H-m.t-m.b;
+    var x=d3.scaleUtc().domain(d3.extent(rows,function(r){return r.date;})).range([0,iw]);
+    var y=d3.scaleLinear().domain([0,(d3.max(rows,function(r){return r.v;})||1)*1.12]).range([ih,0]).nice();
+    var svg=d3.select(el).append('svg').attr('class','svg').attr('width','100%').attr('viewBox','0 0 '+W+' '+H);
+    var g=svg.append('g').attr('transform','translate('+m.l+','+m.t+')');
+    g.append('g').attr('class','grid').call(d3.axisLeft(y).ticks(4).tickSize(-iw).tickFormat(''));
+    var col=pal().accent;
+    var lg=svg.append('defs').append('linearGradient').attr('id','grad').attr('x1',0).attr('x2',0).attr('y1',0).attr('y2',1);
+    lg.append('stop').attr('offset','0%').attr('stop-color',col).attr('stop-opacity',0.30);
+    lg.append('stop').attr('offset','100%').attr('stop-color',col).attr('stop-opacity',0);
+    var area=d3.area().x(function(r){return x(r.date);}).y0(ih).y1(function(r){return y(r.v);}).curve(d3.curveMonotoneX);
+    var line=d3.line().x(function(r){return x(r.date);}).y(function(r){return y(r.v);}).curve(d3.curveMonotoneX);
+    g.append('path').datum(rows).attr('d',area).attr('fill','url(#grad)');
+    g.append('path').datum(rows).attr('d',line).attr('fill','none').attr('stroke',col).attr('stroke-width',2);
+    g.append('g').attr('class','axis').attr('transform','translate(0,'+ih+')').call(d3.axisBottom(x).ticks(d3.utcMonth.every(1)).tickFormat(d3.utcFormat('%b')));
+    g.append('g').attr('class','axis').call(d3.axisLeft(y).ticks(4).tickFormat(function(v){return inrK(v);}));
+    var tip=d3.select(el).append('div').attr('class','tip').style('display','none');
+    var focus=g.append('circle').attr('r',4).attr('fill',col).attr('stroke',pal().panel).attr('stroke-width',1.5).style('display','none');
+    var bis=d3.bisector(function(r){return r.date;}).left;
+    svg.append('rect').attr('x',m.l).attr('y',m.t).attr('width',iw).attr('height',ih).attr('fill','transparent')
+      .on('mousemove',function(ev){ var mx=d3.pointer(ev,g.node())[0]; var dt=x.invert(mx);
+        var i=bis(rows,dt),a=rows[i-1],b=rows[i],r=!a?b:!b?a:(dt-a.date>b.date-dt?b:a); if(!r)return;
+        focus.style('display',null).attr('cx',x(r.date)).attr('cy',y(r.v));
+        showTip(tip,d3.utcFormat('%d %b %Y')(r.date),inr(r.v)); placeTip(tip,el,x(r.date)+m.l,y(r.v)+m.t); })
+      .on('mouseleave',function(){ focus.style('display','none'); tip.style('display','none'); });
+  }
+
+  function drawBars(elId,rowsIn,nameKey,valKey,subFn,tipFn){
+    var el=document.getElementById(elId); el.innerHTML='';
+    var rows=rowsIn.map(function(r){return {name:r[nameKey],v:+r[valKey],raw:r};});
+    rows.sort(function(a,b){return b.v-a.v;});
+    var W=el.clientWidth||560,rowH=34,m={t:6,r:56,b:6,l:126},H=m.t+m.b+rows.length*rowH,iw=W-m.l-m.r;
+    var x=d3.scaleLinear().domain([0,d3.max(rows,function(r){return r.v;})||1]).range([0,iw]);
+    var y=d3.scaleBand().domain(rows.map(function(r){return r.name;})).range([m.t,H-m.b]).padding(0.3);
+    var svg=d3.select(el).append('svg').attr('class','svg').attr('width','100%').attr('viewBox','0 0 '+W+' '+H);
+    var col=pal().accent;
+    var rg=svg.selectAll('g.r').data(rows).enter().append('g');
+    rg.append('text').attr('class','blabel').attr('x',m.l-12).attr('y',function(r){return y(r.name)+y.bandwidth()/2+(subFn?-3:0);}).attr('dy','0.32em').attr('text-anchor','end').text(function(r){return r.name;});
+    if(subFn){ rg.append('text').attr('class','bsub').attr('x',m.l-12).attr('y',function(r){return y(r.name)+y.bandwidth()/2+10;}).attr('dy','0.32em').attr('text-anchor','end').text(function(r){return subFn(r.raw);}); }
+    rg.append('rect').attr('class','track').attr('x',m.l).attr('y',function(r){return y(r.name);}).attr('height',y.bandwidth()).attr('width',iw).attr('rx',5);
+    rg.append('rect').attr('x',m.l).attr('y',function(r){return y(r.name);}).attr('height',y.bandwidth()).attr('width',function(r){return Math.max(2,x(r.v));}).attr('rx',5).attr('fill',col);
+    rg.append('text').attr('class','bval').attr('x',function(r){return m.l+Math.max(2,x(r.v))+8;}).attr('y',function(r){return y(r.name)+y.bandwidth()/2;}).attr('dy','0.32em').text(function(r){return inrK(r.v);});
+    var tip=d3.select(el).append('div').attr('class','tip').style('display','none');
+    rg.on('mousemove',function(ev,r){ var p=d3.pointer(ev,el); showTip(tip,r.name,tipFn(r.raw)); placeTip(tip,el,p[0],p[1]); })
+      .on('mouseleave',function(){ tip.style('display','none'); });
+  }
+  function drawProducts(){ drawBars('products',DATA.products,'product','revenue',
+    function(raw){return raw.type;},
+    function(raw){return inr(raw.revenue)+' · '+fmtIN.format(raw.units)+' units';}); }
+  function drawRegions(){ drawBars('regions',DATA.regions,'state','revenue',null,
+    function(raw){return inr(raw.revenue)+' · '+fmtIN.format(raw.orders)+' orders';}); }
+
+  function drawFulfil(){
+    var el=document.getElementById('fulfil'); el.innerHTML='';
+    var rows=DATA.fulfilment.map(function(r){return {name:r.channel,v:+r.revenue,u:+r.units};});
+    rows.sort(function(a,b){return b.v-a.v;});
+    var total=d3.sum(rows,function(r){return r.v;})||1;
+    var W=el.clientWidth||360,H=190,R=Math.min(H,W)/2-6,ir=R*0.62;
+    var P=pal(),palc=[P.accent,P.accent2];
+    var svg=d3.select(el).append('svg').attr('class','svg').attr('width','100%').attr('viewBox','0 0 '+W+' '+H);
+    var g=svg.append('g').attr('transform','translate('+(W/2)+','+(H/2)+')');
+    var pie=d3.pie().sort(null).value(function(r){return r.v;});
+    var arc=d3.arc().innerRadius(ir).outerRadius(R).padAngle(0.015).cornerRadius(3);
+    var tip=d3.select(el).append('div').attr('class','tip').style('display','none');
+    g.selectAll('path').data(pie(rows)).enter().append('path').attr('d',arc)
+      .attr('fill',function(d,i){return palc[i%palc.length];}).attr('stroke',P.panel).attr('stroke-width',2)
+      .on('mousemove',function(ev,dd){ var p=d3.pointer(ev,el); showTip(tip,dd.data.name,inr(dd.data.v)+' · '+Math.round(100*dd.data.v/total)+'%'); placeTip(tip,el,p[0],p[1]); })
+      .on('mouseleave',function(){ tip.style('display','none'); });
+    var top=rows[0],share=Math.round(100*top.v/total);
+    g.append('text').attr('class','donut-big').attr('text-anchor','middle').attr('dy','-0.05em').text(share+'%');
+    g.append('text').attr('class','donut-sub').attr('text-anchor','middle').attr('dy','1.35em').text(top.name.indexOf('Amazon')>-1?'via Amazon':'top channel');
+    var leg=d3.select(el).append('div').attr('class','legend');
+    rows.forEach(function(r,i){ var pct=Math.round(100*r.v/total);
+      var it=leg.append('div').attr('class','leg-item');
+      it.append('span').attr('class','dot').style('background',palc[i%palc.length]);
+      it.append('span').text(r.name);
+      it.append('span').attr('class','leg-val').text(inrK(r.v)+'  ·  '+pct+'%'); });
+  }
+
+  function drawAll(){ drawTrend(); drawProducts(); drawFulfil(); drawRegions(); }
+  if(window.d3){ drawAll();
+    var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(drawAll,150); });
+    if(window.matchMedia){ try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',drawAll); }catch(e){} }
+  }
+})();
+</script>
+</body>
+</html>
